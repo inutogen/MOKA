@@ -244,9 +244,9 @@ if fs.exists(".moka") == false then
     print("Thank you for installing MOKA!")
     sleep(1)
 else
-    print("[")
+    io.write("[")
     term.setTextColor(colors.green)
-    print("INIT")
+    io.write("INIT")
     term.setTextColor(colors.white)
     print("]: Getting mokafile data...")
     hostdata,tickSpeed,newServerName = loadfile(".moka")()
