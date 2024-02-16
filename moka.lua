@@ -202,12 +202,12 @@ if fs.exists(".moka") == false then
         shell.run("delete","tmp")
     end
     shell.run("wget","https://pastebin.com/raw/3LfWxRWh","tmp")
-    local bigfont = require("/tmp")
+    local bigfont = require("tmp")
     term.clear()
     term.setCursorPos(1,1)
     bigfont.bigPrint("Welcome")
     shell.run("delete","tmp")
-    print("...to MOKA 0.1-dev.1\n\n\nPress any key to continue...")
+    print("...to MOKA 0.1-dev.2\n\n\nPress any key to continue...")
     os.pullEvent("key")
     term.clear()
     term.setCursorPos(1,1)
@@ -239,11 +239,77 @@ if fs.exists(".moka") == false then
         mokafile.write("serverName=\""..text.."\"\n")
     end
     mokafile.close()
+    term.clear()
+    term.setCursorPos(1,1)
+    print("Thank you for installing MOKA!")
+    sleep(1)
 else
-    loadfile(".moka")()
+    print("[")
+    term.setTextColor(colors.green)
+    print("INIT")
+    term.setTextColor(colors.white)
+    print("]: Getting mokafile data...")
+    hostdata,tickSpeed,newServerName = loadfile(".moka")()
+    local function okay(text)
+        print("[")
+        term.setTextColor(colors.green)
+        print("OKAY")
+        term.setTextColor(colors.white)
+        print("]: "..text)
+    end
+
+    
+    local function warn(text)
+        print("[")
+        term.setTextColor(colors.yellow)
+        print("WARN")
+        term.setTextColor(colors.white)
+        print("]: "..text)
+    end
+    
+    local function nilvalue(text)
+        print("[")
+        term.setTextColor(colors.red)
+        print("NILV")
+        term.setTextColor(colors.white)
+        print("]: "..text)
+    end
+
+    local nilevent = false
+    
+    if not hostdata == nil then
+        okay("hostdata "..hostdata)
+    else
+        nilvalue("hostdata")
+        nilevent = true
+    end
+
+    if not tickSpeed == nil then
+        okay("tickSpeed "..tickSpeed)
+    else
+        nilvalue("tickSpeed")
+        nilevent = true
+    end
+
+    if not newServerName == nil then
+        okay("serverName "..newServerName)
+    else
+        warn("serverName not defined, setting to default instead")
+    end
+
+    if nilevent == true then
+        os.pullEvent("terminate")
+    end
 end
 
+if not newServerName == nil then
+    serverName = newServerName
+end
 
+term.clear()
+term.setCursorPos(1,1)
+term.setTextColor(colors.white)
+print("MOKA running")
 peripheral.find("modem", rednet.open)
 rednet.host(hostdata, serverName)
 local idlist = {}
