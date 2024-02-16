@@ -207,7 +207,7 @@ if fs.exists(".moka") == false then
     term.setCursorPos(1,1)
     bigfont.bigPrint("Welcome")
     shell.run("delete","tmp")
-    print("...to MOKA 0.1-dev.3\n\n\nPress any key to continue...")
+    print("...to MOKA 0.1-dev.4\n\n\nPress any key to continue...")
     os.pullEvent("key")
     term.clear()
     term.setCursorPos(1,1)
@@ -251,26 +251,26 @@ else
     print("]: Getting mokafile data...")
     hostdata,tickSpeed,newServerName = loadfile(".moka")()
     local function okay(text)
-        print("[")
+        io.write("[")
         term.setTextColor(colors.green)
-        print("OKAY")
+        io.write("OKAY")
         term.setTextColor(colors.white)
         print("]: "..text)
     end
 
     
     local function warn(text)
-        print("[")
+        io.write("[")
         term.setTextColor(colors.yellow)
-        print("WARN")
+        io.write("WARN")
         term.setTextColor(colors.white)
         print("]: "..text)
     end
     
     local function nilvalue(text)
-        print("[")
+        io.write("[")
         term.setTextColor(colors.red)
-        print("NILV")
+        io.write("NILV")
         term.setTextColor(colors.white)
         print("]: "..text)
     end
