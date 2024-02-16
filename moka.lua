@@ -198,15 +198,15 @@ local tickSpeed = 10
 local serverName = "server"..tostring(os.getComputerID())
 
 if fs.exists(".moka") == false then
-    if fs.exists(".tmp") == true then
-        shell.run("delete",".tmp")
+    if fs.exists("tmp") == true then
+        shell.run("delete","tmp")
     end
-    shell.run("wget","https://pastebin.com/raw/3LfWxRWh",".tmp")
-    local bigfont = require("/.tmp")
+    shell.run("wget","https://pastebin.com/raw/3LfWxRWh","tmp")
+    local bigfont = require("/tmp")
     term.clear()
     term.setCursorPos(1,1)
     bigfont.bigPrint("Welcome")
-    shell.run("delete",".tmp")
+    shell.run("delete","tmp")
     print("...to MOKA 0.1-dev.1\n\n\nPress any key to continue...")
     os.pullEvent("key")
     term.clear()
