@@ -207,7 +207,7 @@ if fs.exists(".moka") == false then
     term.setCursorPos(1,1)
     bigfont.bigPrint("Welcome")
     shell.run("delete","tmp")
-    print("...to MOKA 0.1-dev.11\n\n\nPress any key to continue...")
+    print("...to MOKA 0.1-dev.12\n\n\nPress any key to continue...")
     os.pullEvent("key")
     term.clear()
     term.setCursorPos(1,1)
@@ -305,7 +305,7 @@ else
             _,k = os.pullEvent("key")
         until k == keys.r or k == keys.q
         if k == keys.q then
-            coroutine.yield("terminate")
+            os.queueEvent("terminate")
         end
         if k == keys.r then
             shell.run("wget","https://pastebin.com/raw/3LfWxRWh","tmp")
@@ -324,6 +324,7 @@ else
             term.setBackgroundColor(colors.black)
             term.clear()
             term.setCursorPos(1,1)
+            os.queueEvent("terminate")
         end
     end
 end
