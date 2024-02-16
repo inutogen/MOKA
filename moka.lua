@@ -207,7 +207,7 @@ if fs.exists(".moka") == false then
     term.setCursorPos(1,1)
     bigfont.bigPrint("Welcome")
     shell.run("delete","tmp")
-    print("...to MOKA 0.1-dev.4\n\n\nPress any key to continue...")
+    print("...to MOKA 0.1-dev.5\n\n\nPress any key to continue...")
     os.pullEvent("key")
     term.clear()
     term.setCursorPos(1,1)
@@ -277,21 +277,21 @@ else
 
     local nilevent = false
     
-    if not hostdata == nil then
+    if not hostdata =~ nil then
         okay("hostdata "..hostdata)
     else
         nilvalue("hostdata")
         nilevent = true
     end
 
-    if not tickSpeed == nil then
+    if not tickSpeed =~ nil then
         okay("tickSpeed "..tickSpeed)
     else
         nilvalue("tickSpeed")
         nilevent = true
     end
 
-    if not newServerName == nil then
+    if not newServerName =~ nil then
         okay("serverName "..newServerName)
     else
         warn("serverName not defined, setting to default instead")
