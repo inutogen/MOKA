@@ -207,7 +207,7 @@ if fs.exists(".moka") == false then
     term.setCursorPos(1,1)
     bigfont.bigPrint("Welcome")
     shell.run("delete","tmp")
-    print("...to MOKA 0.1-dev.6\n\n\nPress any key to continue...")
+    print("...to MOKA 0.1-dev.7\n\n\nPress any key to continue...")
     os.pullEvent("key")
     term.clear()
     term.setCursorPos(1,1)
@@ -235,8 +235,8 @@ if fs.exists(".moka") == false then
     PrimeUI.inputBox(term.current(), 4, 7, 40, "result")
     local _, _, text = PrimeUI.run()
     serverName = text
-    if not text == "" then
-        mokafile.write(","..text)
+    if text ~= "" then
+        mokafile.write(",\""..text.."\"")
     end
     mokafile.close()
     term.clear()
