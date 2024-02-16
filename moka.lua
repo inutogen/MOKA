@@ -207,7 +207,7 @@ if fs.exists(".moka") == false then
     term.setCursorPos(1,1)
     bigfont.bigPrint("Welcome")
     shell.run("delete","tmp")
-    print("...to MOKA 0.1-dev.10\n\n\nPress any key to continue...")
+    print("...to MOKA 0.1-dev.11\n\n\nPress any key to continue...")
     os.pullEvent("key")
     term.clear()
     term.setCursorPos(1,1)
@@ -302,7 +302,7 @@ else
         print("MOKA: Error detected. Press R to enter recovery mode, or Q to exit.")
         local k = 0
         repeat
-            k,_ = os.pullEvent("key")
+            _,k = os.pullEvent("key")
         until k == keys.r or k == keys.q
         if k == keys.q then
             coroutine.yield("terminate")
@@ -314,7 +314,6 @@ else
             term.setBackgroundColor(colors.blue)
             term.clear()
             term.setTextColor(colors.white)
-            print(errmsg.."\n")
             bigfont.bigPrint("Error")
             shell.run("delete", "tmp")
             print("Attempting to fix...\n\n")
