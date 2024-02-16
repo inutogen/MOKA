@@ -277,21 +277,21 @@ else
 
     local nilevent = false
     
-    if not hostdata =~ nil then
+    if hostdata =~ nil then
         okay("hostdata "..hostdata)
     else
         nilvalue("hostdata")
         nilevent = true
     end
 
-    if not tickSpeed =~ nil then
+    if tickSpeed =~ nil then
         okay("tickSpeed "..tickSpeed)
     else
         nilvalue("tickSpeed")
         nilevent = true
     end
 
-    if not newServerName =~ nil then
+    if newServerName =~ nil then
         okay("serverName "..newServerName)
     else
         warn("serverName not defined, setting to default instead")
