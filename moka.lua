@@ -207,7 +207,7 @@ if fs.exists(".moka") == false then
     term.setCursorPos(1,1)
     bigfont.bigPrint("Welcome")
     shell.run("delete","tmp")
-    print("...to MOKA 0.1-dev.2\n\n\nPress any key to continue...")
+    print("...to MOKA 0.1-dev.3\n\n\nPress any key to continue...")
     os.pullEvent("key")
     term.clear()
     term.setCursorPos(1,1)
@@ -219,7 +219,7 @@ if fs.exists(".moka") == false then
     local _, _, text = PrimeUI.run()
     hostdata = text
     local mokafile = fs.open(".moka", "w")
-    mokafile.write("hostdata=\""..text.."\"\n")
+    mokafile.write("return "..text)
     PrimeUI.clear()
     PrimeUI.label(term.current(), 3, 2, "tickSpeed... (reccomended == 10)")
     PrimeUI.horizontalLine(term.current(), 3, 3, #("tickSpeed... (reccomended == 10)") + 2)
@@ -227,7 +227,7 @@ if fs.exists(".moka") == false then
     PrimeUI.inputBox(term.current(), 4, 7, 40, "result")
     local _, _, text = PrimeUI.run()
     tickSpeed = tonumber(text)
-    mokafile.write("tickSpeed="..text.."\n")
+    mokafile.write(","..text)
     PrimeUI.clear()
     PrimeUI.label(term.current(), 3, 2, "serverName... (press enter for default)")
     PrimeUI.horizontalLine(term.current(), 3, 3, #("serverName... (press enter for default)") + 2)
@@ -236,7 +236,7 @@ if fs.exists(".moka") == false then
     local _, _, text = PrimeUI.run()
     serverName = text
     if not text == "" then
-        mokafile.write("serverName=\""..text.."\"\n")
+        mokafile.write(","..text)
     end
     mokafile.close()
     term.clear()
