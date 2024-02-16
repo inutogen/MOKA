@@ -207,7 +207,7 @@ if fs.exists(".moka") == false then
     term.setCursorPos(1,1)
     bigfont.bigPrint("Welcome")
     shell.run("delete","tmp")
-    print("...to MOKA 0.1-dev.9\n\n\nPress any key to continue...")
+    print("...to MOKA 0.1-dev.10\n\n\nPress any key to continue...")
     os.pullEvent("key")
     term.clear()
     term.setCursorPos(1,1)
@@ -333,8 +333,6 @@ if not newServerName == nil then
     serverName = newServerName
 end
 
-term.clear()
-term.setCursorPos(1,1)
 term.setTextColor(colors.white)
 print("MOKA running")
 peripheral.find("modem", rednet.open)
