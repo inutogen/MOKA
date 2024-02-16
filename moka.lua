@@ -236,7 +236,7 @@ if fs.exists(".moka") == false then
     local _, _, text = PrimeUI.run()
     serverName = text
     if not text == "" then
-        mokafile.write(","..text)
+        mokafile.write(",\""..text.."\"")
     end
     mokafile.close()
     term.clear()
