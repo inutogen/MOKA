@@ -298,7 +298,34 @@ else
     end
 
     if nilevent == true then
-        os.pullEvent("terminate")
+        term.setTextColor(colors.red)
+        print("MOKA: Error detected. Press R to enter recovery mode, or Q to exit.")
+        local k = 0
+        repeat
+            k,_ = os.pullEvent("key")
+        until k == keys.r or k == keys.q
+        if k == keys.q then
+            coroutine.yield("terminate")
+        end
+        if k == keys.r then
+            shell.run("wget","https://pastebin.com/raw/3LfWxRWh","tmp")
+            local bigfont = require("tmp")
+            term.setCursorPos(1,1)
+            term.setBackgroundColor(colors.blue)
+            term.clear()
+            term.setTextColor(colors.white)
+            print(errmsg.."\n")
+            bigfont.bigPrint("Error")
+            shell.run("delete", "tmp")
+            print("Attempting to fix...\n\n")
+            shell.run("delete", "moka.lua")
+            shell.run("wget", "https://raw.githubusercontent.com/inutogen/MOKA/main/moka.lua")
+            print("Fixes applied. Press any key to continue...")
+            os.pullEvent("key")
+            term.setBackgroundColor(colors.black)
+            term.clear()
+            term.setCursorPos(1,1)
+        end
     end
 end
 
