@@ -208,7 +208,7 @@ if fs.exists(".moka") == false then
     term.setCursorPos(1,1)
     bigfont.bigPrint("Welcome")
     shell.run("delete","tmp")
-    print("...to MOKA 0.1-dev.18\n\n\nPress any key to continue...")
+    print("...to MOKA 0.1-dev.19\n\n\nPress any key to continue...")
     os.pullEvent("key")
     term.clear()
     term.setCursorPos(1,1)
@@ -362,11 +362,11 @@ else
     
     if nilevent == true then
         term.setTextColor(colors.red)
-        print("MOKA: Error detected. Press R to enter recovery mode, or Q to exit.")
+        print("MOKA: Error detected. Press R to enter recovery mode, C to continue with default values, or Q to exit.")
         local k = 0
         repeat
             _,k = os.pullEvent("key")
-        until k == keys.r or k == keys.q
+        until k == keys.r or k == keys.q or k == keys.c
         if k == keys.q then
             os.queueEvent("terminate")
         end
