@@ -270,7 +270,6 @@ else
     term.setTextColor(colors.white)
     print("]: Getting mokafile data...")
     dataTable = loadfile(".moka")()
-    dataTable = textutils.unserialise(dataTable)
     local function okay(text)
         io.write("[")
         term.setTextColor(colors.green)
