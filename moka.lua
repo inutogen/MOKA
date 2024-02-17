@@ -197,6 +197,7 @@ local hostdata = "SERVER"
 local tickSpeed = 10
 local serverName = "server"..tostring(os.getComputerID())
 local mokaFormat = "{3}"
+local reboundnum = "disable"
 
 if fs.exists(".moka") == false then
     if fs.exists("tmp") == true then
@@ -208,7 +209,7 @@ if fs.exists(".moka") == false then
     term.setCursorPos(1,1)
     bigfont.bigPrint("Welcome")
     shell.run("delete","tmp")
-    print("...to MOKA 0.1-dev.19\n\n\nPress any key to continue...")
+    print("...to MOKA 0.1-dev.20\n\n\nPress any key to continue...")
     os.pullEvent("key")
     term.clear()
     term.setCursorPos(1,1)
@@ -252,10 +253,24 @@ if fs.exists(".moka") == false then
     local _, _, text = PrimeUI.run()
 
     if text ~= "" then
-        mokafile.write(",[4]=\""..text.."\"}")
+        mokafile.write(",[4]=\""..text.."\"")
         mokaFormat = text
     else
-        mokafile.write(",[4]=\"{3}\"}")
+        mokafile.write(",[4]=\"{3}\"")
+    end
+
+    PrimeUI.clear()
+    PrimeUI.label(term.current(), 3, 2, "reboundClient #... (press enter to disable)")
+    PrimeUI.horizontalLine(term.current(), 3, 3, #("reboundClient #... (press enter to disable)") + 2)
+    PrimeUI.borderBox(term.current(), 4, 7, 40, 1)
+    PrimeUI.inputBox(term.current(), 4, 7, 40, "result")
+    local _, _, text = PrimeUI.run()
+    
+    if text ~= "" then
+        mokafile.write(",[5]="..text.."}")
+        reboundnum = tonumber(text)
+    else
+        mokafile.write(",[5]=\"disable\"}")
     end
     
     mokafile.close()
@@ -299,21 +314,29 @@ else
     local function dohostdata()
         hostdata = dataTable[1]
     end
+    
     local function dotickSpeed()
         tickSpeed = dataTable[2]
     end
+    
     local function donewServerName()
         newServerName = dataTable[3]
     end
+    
     local function donewmokaFormat()
         newmokaFormat = dataTable[4]
     end
 
+    local function doreboundnum()
+        newreboundnum = dataTable[5]
+    end
+    
     local ok1,_ = pcall(dohostdata)
     local ok2,_ = pcall(dotickSpeed)
     local ok3,_ = pcall(donewServerName)
     local ok4,_ = pcall(donewmokaFormat)
-
+    local ok5,_ = pcall(doreboundnum)
+    
     if ok1 == false then
         nilvalue("Could not retreive hostdata")
         nilevent = true
@@ -331,6 +354,11 @@ else
 
     if ok4 == false then
         nilvalue("Could not retreive mokaFormat")
+        nilevent = true
+    end
+    
+    if ok5 == false then
+        nilvalue("Could not retreive reboundnum")
         nilevent = true
     end
     
@@ -355,9 +383,15 @@ else
     end
 
     if newmokaFormat ~= nil then
-        okay("mokaFormat "..mokaFormat)
+        okay("mokaFormat "..newmokaFormat)
     else
         warn("mokaFormat not defined, setting to default instead")
+    end
+    
+    if newreboundnum ~= nil then
+        okay("reboundnum "..newreboundnum)
+    else
+        warn("reboundnum not defined, setting to default instead")
     end
     
     if nilevent == true then
@@ -401,6 +435,10 @@ if newmokaFormat ~= nil then
     mokaFormat = newmokaFormat
 end
 
+if newreboundnum ~= nil then
+    reboundnum = newreboundnum
+end
+
 local function compare(formatv, message)
     local expectedCount = tonumber(formatv:match("{(%d+)}"))
 
@@ -413,6 +451,13 @@ local function compare(formatv, message)
     else
         return false
     end
+end
+
+local function reboundClient(pos, newPos, maxval)
+    local a = vector.new(pos[1],pos[2],pos[3])
+    local b = vector.new(newPos[1],newPos[2],newPos[3])
+    local check = b.length() - a.length()
+    return abs(check)>maxval
 end
 
 term.setTextColor(colors.white)
@@ -438,7 +483,14 @@ local function getData()
             if prot == hostdata then
                 local findcorrect = compare(mokaFormat, msg)
                 if findcorrect == true then
-                  pos[id] = msg
+                    if reboundnum ~= "disable" then
+                        local checkRebound = reboundClient(pos[id],msg,tonumber(reboundnum))
+                        if checkRebound == false then
+                            pos[id] = msg
+                        end
+                    else
+                        pos[id] = msg
+                    end
                 end
             end
         end
