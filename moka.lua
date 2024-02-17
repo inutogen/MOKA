@@ -209,7 +209,7 @@ if fs.exists(".moka") == false then
     term.setCursorPos(1,1)
     bigfont.bigPrint("Welcome")
     shell.run("delete","tmp")
-    print("...to MOKA 0.1-dev.20\n\n\nPress any key to continue...")
+    print("...to MOKA 0.1-dev.21\n\n\nPress any key to continue...")
     os.pullEvent("key")
     term.clear()
     term.setCursorPos(1,1)
@@ -484,9 +484,13 @@ local function getData()
                 local findcorrect = compare(mokaFormat, msg)
                 if findcorrect == true then
                     if reboundnum ~= "disable" then
-                        local checkRebound = reboundClient(pos[id],msg,tonumber(reboundnum))
-                        if checkRebound == false then
-                            pos[id] = msg
+                        if pos[id] ~= nil then
+                            local checkRebound = reboundClient(pos[id],msg,tonumber(reboundnum))
+                            if checkRebound == false then
+                                pos[id] = msg
+                            end
+                        else
+                          pos[id] = msg
                         end
                     else
                         pos[id] = msg
