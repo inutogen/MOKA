@@ -209,7 +209,7 @@ if fs.exists(".moka") == false then
     term.setCursorPos(1,1)
     bigfont.bigPrint("Welcome")
     shell.run("delete","tmp")
-    print("...to MOKA 0.1-dev.21\n\n\nPress any key to continue...")
+    print("...to MOKA 0.1-dev.22\n\n\nPress any key to continue...")
     os.pullEvent("key")
     term.clear()
     term.setCursorPos(1,1)
@@ -456,7 +456,7 @@ end
 local function reboundClient(pos, newPos, maxval)
     local a = vector.new(pos[1],pos[2],pos[3])
     local b = vector.new(newPos[1],newPos[2],newPos[3])
-    local check = b.length() - a.length()
+    local check = b:length() - a:length()
     return abs(check)>maxval
 end
 
