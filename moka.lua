@@ -362,7 +362,7 @@ else
     
     if nilevent == true then
         term.setTextColor(colors.red)
-        print("MOKA: Error detected. Press R to enter recovery mode, C to continue with default values, or Q to exit.")
+        print("MOKA: Error detected. Press R to enter recovery mode, C to continue with default values (not reccomended!), or Q to exit.")
         local k = 0
         repeat
             _,k = os.pullEvent("key")
