@@ -208,7 +208,7 @@ if fs.exists(".moka") == false then
     term.setCursorPos(1,1)
     bigfont.bigPrint("Welcome")
     shell.run("delete","tmp")
-    print("...to MOKA 0.1-dev.15\n\n\nPress any key to continue...")
+    print("...to MOKA 0.1-dev.16\n\n\nPress any key to continue...")
     os.pullEvent("key")
     term.clear()
     term.setCursorPos(1,1)
@@ -271,10 +271,6 @@ else
     print("]: Getting mokafile data...")
     dataTable = loadfile(".moka")()
     dataTable = textutils.unserialise(dataTable)
-    hostdata = dataTable[1]
-    tickSpeed = dataTable[2]
-    newServerName = dataTable[3]
-    newmokaFormat = dataTable[4]
     local function okay(text)
         io.write("[")
         term.setTextColor(colors.green)
@@ -301,6 +297,43 @@ else
     end
 
     local nilevent = false
+    local function dohostdata()
+        hostdata = dataTable[1]
+    end
+    local function dotickSpeed()
+        tickSpeed = dataTable[2]
+    end
+    local function donewServerName()
+        newServerName = dataTable[3]
+    end
+    local function donewmokaFormat()
+        newmokaFormat = dataTable[4]
+    end
+
+    local ok1,_ = pcall(dohostdata)
+    local ok2,_ = pcall(dotickSpeed)
+    local ok3,_ = pcall(donewServerName)
+    local ok4,_ = pcall(donewmokaFormat)
+
+    if ok1 == false then
+        nilvalue("Could not retreive hostdata")
+        nilevent = true
+    end
+
+    if ok1 == false then
+        nilvalue("Could not retreive tickSpeed")
+        nilevent = true
+    end
+
+    if ok1 == false then
+        nilvalue("Could not retreive serverName")
+        nilevent = true
+    end
+
+    if ok1 == false then
+        nilvalue("Could not retreive mokaFormat")
+        nilevent = true
+    end
     
     if hostdata ~= nil then
         okay("hostdata "..hostdata)
