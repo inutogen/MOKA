@@ -208,7 +208,7 @@ if fs.exists(".moka") == false then
     term.setCursorPos(1,1)
     bigfont.bigPrint("Welcome")
     shell.run("delete","tmp")
-    print("...to MOKA 0.1-dev.16\n\n\nPress any key to continue...")
+    print("...to MOKA 0.1-dev.17\n\n\nPress any key to continue...")
     os.pullEvent("key")
     term.clear()
     term.setCursorPos(1,1)
@@ -221,7 +221,7 @@ if fs.exists(".moka") == false then
     local _, _, text = PrimeUI.run()
     hostdata = text
     local mokafile = fs.open(".moka", "w")
-    mokafile.write("return \"{"..text.."\"")
+    mokafile.write("return {[1]=\""..text.."\"")
     
     PrimeUI.clear()
     PrimeUI.label(term.current(), 3, 2, "tickSpeed... (reccomended == 10)")
@@ -230,7 +230,7 @@ if fs.exists(".moka") == false then
     PrimeUI.inputBox(term.current(), 4, 7, 40, "result")
     local _, _, text = PrimeUI.run()
     tickSpeed = tonumber(text)
-    mokafile.write(","..text)
+    mokafile.write(",[2]="..text)
     
     PrimeUI.clear()
     PrimeUI.label(term.current(), 3, 2, "serverName... (press enter for default)")
@@ -240,7 +240,7 @@ if fs.exists(".moka") == false then
     local _, _, text = PrimeUI.run()
     
     if text ~= "" then
-        mokafile.write(",\""..text.."\"")
+        mokafile.write(",[3]=\""..text.."\"")
         serverName = text
     end
 
@@ -252,10 +252,10 @@ if fs.exists(".moka") == false then
     local _, _, text = PrimeUI.run()
 
     if text ~= "" then
-        mokafile.write(",\""..text.."\"}")
+        mokafile.write(",[4]=\""..text.."\"}")
         mokaFormat = text
     else
-        mokafile.write(",\"{3}\"}")
+        mokafile.write(",[4]=\"{3}\"}")
     end
     
     mokafile.close()
@@ -320,17 +320,17 @@ else
         nilevent = true
     end
 
-    if ok1 == false then
+    if ok2 == false then
         nilvalue("Could not retreive tickSpeed")
         nilevent = true
     end
 
-    if ok1 == false then
+    if ok3 == false then
         nilvalue("Could not retreive serverName")
         nilevent = true
     end
 
-    if ok1 == false then
+    if ok4 == false then
         nilvalue("Could not retreive mokaFormat")
         nilevent = true
     end
