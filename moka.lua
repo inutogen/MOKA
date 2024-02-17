@@ -196,6 +196,7 @@ end
 local hostdata = "SERVER"
 local tickSpeed = 10
 local serverName = "server"..tostring(os.getComputerID())
+local mokaFormat = "{3}"
 
 if fs.exists(".moka") == false then
     if fs.exists("tmp") == true then
@@ -207,10 +208,11 @@ if fs.exists(".moka") == false then
     term.setCursorPos(1,1)
     bigfont.bigPrint("Welcome")
     shell.run("delete","tmp")
-    print("...to MOKA 0.1-dev.13\n\n\nPress any key to continue...")
+    print("...to MOKA 0.1-dev.14\n\n\nPress any key to continue...")
     os.pullEvent("key")
     term.clear()
     term.setCursorPos(1,1)
+    
     PrimeUI.clear()
     PrimeUI.label(term.current(), 3, 2, "Host for protocol... (edit in .moka)")
     PrimeUI.horizontalLine(term.current(), 3, 3, #("Host for protocol... (edit in .moka)") + 2)
@@ -220,6 +222,7 @@ if fs.exists(".moka") == false then
     hostdata = text
     local mokafile = fs.open(".moka", "w")
     mokafile.write("return \""..text.."\"")
+    
     PrimeUI.clear()
     PrimeUI.label(term.current(), 3, 2, "tickSpeed... (reccomended == 10)")
     PrimeUI.horizontalLine(term.current(), 3, 3, #("tickSpeed... (reccomended == 10)") + 2)
@@ -228,16 +231,33 @@ if fs.exists(".moka") == false then
     local _, _, text = PrimeUI.run()
     tickSpeed = tonumber(text)
     mokafile.write(","..text)
+    
     PrimeUI.clear()
     PrimeUI.label(term.current(), 3, 2, "serverName... (press enter for default)")
     PrimeUI.horizontalLine(term.current(), 3, 3, #("serverName... (press enter for default)") + 2)
     PrimeUI.borderBox(term.current(), 4, 7, 40, 1)
     PrimeUI.inputBox(term.current(), 4, 7, 40, "result")
     local _, _, text = PrimeUI.run()
-    serverName = text
+    
     if text ~= "" then
         mokafile.write(",\""..text.."\"")
+        serverName = text
     end
+
+    PrimeUI.clear()
+    PrimeUI.label(term.current(), 3, 2, "mokaFormat... (press enter for default)")
+    PrimeUI.horizontalLine(term.current(), 3, 3, #("mokaFormat... (press enter for default)") + 2)
+    PrimeUI.borderBox(term.current(), 4, 7, 40, 1)
+    PrimeUI.inputBox(term.current(), 4, 7, 40, "result")
+    local _, _, text = PrimeUI.run()
+
+    if text ~= "" then
+        mokafile.write(",\""..text.."\"")
+        mokaFormat = text
+    else
+        mokafile.write(",\"{3}\"")
+    end
+    
     mokafile.close()
     term.clear()
     term.setCursorPos(1,1)
@@ -249,7 +269,7 @@ else
     io.write("INIT")
     term.setTextColor(colors.white)
     print("]: Getting mokafile data...")
-    hostdata,tickSpeed,newServerName = loadfile(".moka")()
+    hostdata,tickSpeed,newServerName,newmokaFormat = loadfile(".moka")()
     local function okay(text)
         io.write("[")
         term.setTextColor(colors.green)
@@ -297,6 +317,12 @@ else
         warn("serverName not defined, setting to default instead")
     end
 
+    if newmokaFormat ~= nil then
+        okay("mokaFormat "..mokaFormat)
+    else
+        warn("mokaFormat not defined, setting to default instead")
+    end
+    
     if nilevent == true then
         term.setTextColor(colors.red)
         print("MOKA: Error detected. Press R to enter recovery mode, or Q to exit.")
@@ -330,8 +356,26 @@ else
     end
 end
 
-if not newServerName == nil then
+if newServerName ~= nil then
     serverName = newServerName
+end
+
+if newmokaFormat ~= nil then
+    mokaFormat = newmokaFormat
+end
+
+local function compare(formatv, message)
+    local expectedCount = tonumber(formatv:match("{(%d+)}"))
+
+    if not expectedCount then
+        return false
+    end
+
+    if type(message) == "table" then
+        return #message == expectedCount
+    else
+        return false
+    end
 end
 
 term.setTextColor(colors.white)
@@ -355,7 +399,10 @@ local function getData()
             end
         else
             if prot == hostdata then
-                pos[id] = msg
+                local findcorrect = compare(mokaFormat, msg)
+                if findcorrect == true then
+                  pos[id] = msg
+                end
             end
         end
     end
