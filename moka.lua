@@ -208,7 +208,7 @@ if fs.exists(".moka") == false then
     term.setCursorPos(1,1)
     bigfont.bigPrint("Welcome")
     shell.run("delete","tmp")
-    print("...to MOKA 0.1-dev.14\n\n\nPress any key to continue...")
+    print("...to MOKA 0.1-dev.15\n\n\nPress any key to continue...")
     os.pullEvent("key")
     term.clear()
     term.setCursorPos(1,1)
@@ -221,7 +221,7 @@ if fs.exists(".moka") == false then
     local _, _, text = PrimeUI.run()
     hostdata = text
     local mokafile = fs.open(".moka", "w")
-    mokafile.write("return \""..text.."\"")
+    mokafile.write("return \"{"..text.."\"")
     
     PrimeUI.clear()
     PrimeUI.label(term.current(), 3, 2, "tickSpeed... (reccomended == 10)")
@@ -252,10 +252,10 @@ if fs.exists(".moka") == false then
     local _, _, text = PrimeUI.run()
 
     if text ~= "" then
-        mokafile.write(",\""..text.."\"")
+        mokafile.write(",\""..text.."\"}")
         mokaFormat = text
     else
-        mokafile.write(",\"{3}\"")
+        mokafile.write(",\"{3}\"}")
     end
     
     mokafile.close()
@@ -269,7 +269,12 @@ else
     io.write("INIT")
     term.setTextColor(colors.white)
     print("]: Getting mokafile data...")
-    hostdata,tickSpeed,newServerName,newmokaFormat = loadfile(".moka")()
+    dataTable = loadfile(".moka")()
+    dataTable = textutils.unserialise(dataTable)
+    hostdata = dataTable[1]
+    tickSpeed = dataTable[2]
+    newServerName = dataTable[3]
+    newmokaFormat = dataTable[4]
     local function okay(text)
         io.write("[")
         term.setTextColor(colors.green)
