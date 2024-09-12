@@ -196,6 +196,8 @@ end
 local hostdata = "SERVER"
 local tickSpeed = 10
 local serverName = "server"..tostring(os.getComputerID())
+local mokaFormat = "{3}"
+local reboundnum = "disable"
 
 if fs.exists(".moka") == false then
     if fs.exists("tmp") == true then
@@ -207,10 +209,11 @@ if fs.exists(".moka") == false then
     term.setCursorPos(1,1)
     bigfont.bigPrint("Welcome")
     shell.run("delete","tmp")
-    print("...to MOKA 0.1-dev.13\n\n\nPress any key to continue...")
+    print("...to MOKA 0.1-dev.22\n\n\nPress any key to continue...")
     os.pullEvent("key")
     term.clear()
     term.setCursorPos(1,1)
+    
     PrimeUI.clear()
     PrimeUI.label(term.current(), 3, 2, "Host for protocol... (edit in .moka)")
     PrimeUI.horizontalLine(term.current(), 3, 3, #("Host for protocol... (edit in .moka)") + 2)
@@ -219,7 +222,8 @@ if fs.exists(".moka") == false then
     local _, _, text = PrimeUI.run()
     hostdata = text
     local mokafile = fs.open(".moka", "w")
-    mokafile.write("return \""..text.."\"")
+    mokafile.write("return {[1]=\""..text.."\"")
+    
     PrimeUI.clear()
     PrimeUI.label(term.current(), 3, 2, "tickSpeed... (reccomended == 10)")
     PrimeUI.horizontalLine(term.current(), 3, 3, #("tickSpeed... (reccomended == 10)") + 2)
@@ -227,17 +231,48 @@ if fs.exists(".moka") == false then
     PrimeUI.inputBox(term.current(), 4, 7, 40, "result")
     local _, _, text = PrimeUI.run()
     tickSpeed = tonumber(text)
-    mokafile.write(","..text)
+    mokafile.write(",[2]="..text)
+    
     PrimeUI.clear()
     PrimeUI.label(term.current(), 3, 2, "serverName... (press enter for default)")
     PrimeUI.horizontalLine(term.current(), 3, 3, #("serverName... (press enter for default)") + 2)
     PrimeUI.borderBox(term.current(), 4, 7, 40, 1)
     PrimeUI.inputBox(term.current(), 4, 7, 40, "result")
     local _, _, text = PrimeUI.run()
-    serverName = text
+    
     if text ~= "" then
-        mokafile.write(",\""..text.."\"")
+        mokafile.write(",[3]=\""..text.."\"")
+        serverName = text
     end
+
+    PrimeUI.clear()
+    PrimeUI.label(term.current(), 3, 2, "mokaFormat... (press enter for default)")
+    PrimeUI.horizontalLine(term.current(), 3, 3, #("mokaFormat... (press enter for default)") + 2)
+    PrimeUI.borderBox(term.current(), 4, 7, 40, 1)
+    PrimeUI.inputBox(term.current(), 4, 7, 40, "result")
+    local _, _, text = PrimeUI.run()
+
+    if text ~= "" then
+        mokafile.write(",[4]=\""..text.."\"")
+        mokaFormat = text
+    else
+        mokafile.write(",[4]=\"{3}\"")
+    end
+
+    PrimeUI.clear()
+    PrimeUI.label(term.current(), 3, 2, "reboundClient #... (press enter to disable)")
+    PrimeUI.horizontalLine(term.current(), 3, 3, #("reboundClient #... (press enter to disable)") + 2)
+    PrimeUI.borderBox(term.current(), 4, 7, 40, 1)
+    PrimeUI.inputBox(term.current(), 4, 7, 40, "result")
+    local _, _, text = PrimeUI.run()
+    
+    if text ~= "" then
+        mokafile.write(",[5]="..text.."}")
+        reboundnum = tonumber(text)
+    else
+        mokafile.write(",[5]=\"disable\"}")
+    end
+    
     mokafile.close()
     term.clear()
     term.setCursorPos(1,1)
@@ -249,7 +284,7 @@ else
     io.write("INIT")
     term.setTextColor(colors.white)
     print("]: Getting mokafile data...")
-    hostdata,tickSpeed,newServerName = loadfile(".moka")()
+    dataTable = loadfile(".moka")()
     local function okay(text)
         io.write("[")
         term.setTextColor(colors.green)
@@ -276,6 +311,56 @@ else
     end
 
     local nilevent = false
+    local function dohostdata()
+        hostdata = dataTable[1]
+    end
+    
+    local function dotickSpeed()
+        tickSpeed = dataTable[2]
+    end
+    
+    local function donewServerName()
+        newServerName = dataTable[3]
+    end
+    
+    local function donewmokaFormat()
+        newmokaFormat = dataTable[4]
+    end
+
+    local function doreboundnum()
+        newreboundnum = dataTable[5]
+    end
+    
+    local ok1,_ = pcall(dohostdata)
+    local ok2,_ = pcall(dotickSpeed)
+    local ok3,_ = pcall(donewServerName)
+    local ok4,_ = pcall(donewmokaFormat)
+    local ok5,_ = pcall(doreboundnum)
+    
+    if ok1 == false then
+        nilvalue("Could not retreive hostdata")
+        nilevent = true
+    end
+
+    if ok2 == false then
+        nilvalue("Could not retreive tickSpeed")
+        nilevent = true
+    end
+
+    if ok3 == false then
+        nilvalue("Could not retreive serverName")
+        nilevent = true
+    end
+
+    if ok4 == false then
+        nilvalue("Could not retreive mokaFormat")
+        nilevent = true
+    end
+    
+    if ok5 == false then
+        nilvalue("Could not retreive reboundnum")
+        nilevent = true
+    end
     
     if hostdata ~= nil then
         okay("hostdata "..hostdata)
@@ -297,13 +382,25 @@ else
         warn("serverName not defined, setting to default instead")
     end
 
+    if newmokaFormat ~= nil then
+        okay("mokaFormat "..newmokaFormat)
+    else
+        warn("mokaFormat not defined, setting to default instead")
+    end
+    
+    if newreboundnum ~= nil then
+        okay("reboundnum "..newreboundnum)
+    else
+        warn("reboundnum not defined, setting to default instead")
+    end
+    
     if nilevent == true then
         term.setTextColor(colors.red)
-        print("MOKA: Error detected. Press R to enter recovery mode, or Q to exit.")
+        print("MOKA: Error detected. Press R to enter recovery mode, C to continue with default values (not reccomended!), or Q to exit.")
         local k = 0
         repeat
             _,k = os.pullEvent("key")
-        until k == keys.r or k == keys.q
+        until k == keys.r or k == keys.q or k == keys.c
         if k == keys.q then
             os.queueEvent("terminate")
         end
@@ -330,8 +427,37 @@ else
     end
 end
 
-if not newServerName == nil then
+if newServerName ~= nil then
     serverName = newServerName
+end
+
+if newmokaFormat ~= nil then
+    mokaFormat = newmokaFormat
+end
+
+if newreboundnum ~= nil then
+    reboundnum = newreboundnum
+end
+
+local function compare(formatv, message)
+    local expectedCount = tonumber(formatv:match("{(%d+)}"))
+
+    if not expectedCount then
+        return false
+    end
+
+    if type(message) == "table" then
+        return #message == expectedCount
+    else
+        return false
+    end
+end
+
+local function reboundClient(pos, newPos, maxval)
+    local a = vector.new(pos[1],pos[2],pos[3])
+    local b = vector.new(newPos[1],newPos[2],newPos[3])
+    local check = b:length() - a:length()
+    return abs(check)>maxval
 end
 
 term.setTextColor(colors.white)
@@ -355,7 +481,21 @@ local function getData()
             end
         else
             if prot == hostdata then
-                pos[id] = msg
+                local findcorrect = compare(mokaFormat, msg)
+                if findcorrect == true then
+                    if reboundnum ~= "disable" then
+                        if pos[id] ~= nil then
+                            local checkRebound = reboundClient(pos[id],msg,tonumber(reboundnum))
+                            if checkRebound == false then
+                                pos[id] = msg
+                            end
+                        else
+                          pos[id] = msg
+                        end
+                    else
+                        pos[id] = msg
+                    end
+                end
             end
         end
     end
